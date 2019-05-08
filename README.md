@@ -8,9 +8,10 @@
 
 # Framework
 
-- Express JS
-- Handlebars
-- Vue JS
+- Express
+- Vue
+- Vuetify
+- Axios
 - MongoDB
 - Nodemon
 
@@ -19,7 +20,7 @@
 Clone This Repository
 
 ```
-$ git clone https://github.com/anasrar/cendek.git samehadaku
+$ git clone https://github.com/anasrar/cendek.git && cd cendek
 ```
 
 Install Dependencies 
@@ -30,14 +31,19 @@ $ npm install
 
 # Run
 
-For Development
+Build Vue
+```
+$ npm run build
+```
+
+For Development Server
 
 ```
-npm run dev
+$ npm run dev
 ```
 
 Or
 
 ```
-npm start
+$ npm run start
 ```

@@ -1,9 +1,7 @@
 const Express = require('express')
-const handlebars = require('express-handlebars').create({ defaultLayout: 'main' })
 const BodyParser = require('body-parser')
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
-const Cors = require('cors')
 
 const randStr = (a = 3) => {
     const posibleChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
@@ -21,17 +19,14 @@ const loadLinkColl = async () => {
 const app = Express()
 app.use(BodyParser.json())
 app.use(BodyParser.urlencoded({ extended: true }))
-app.use(Cors())
-
-app.engine('handlebars', handlebars.engine)
-app.set('view engine', 'handlebars')
+app.use(require('cors')())
 
 app.disable('x-powered-by')
 
+app.use(Express.static(__dirname + '/dist'))
+
 app.get('/', (req, res) => {
-    res.render('home', {
-        title: "Cendek"
-    });
+    res.sendFile(__dirname + '/dist/index.html')
 })
 
 app.post('/', async (req, res) => {
@@ -53,14 +48,17 @@ app.get('^/:link([a-zA-Z0-9-_]+)$', async (req, res) => {
     const links = await loadLinkColl();
     const result = await links.find({ result: req.params.link }).toArray()
     if (result.length) {
-        res.render('page', {
-            title: "Go Page",
-            link: result[0].link
-        })
+        res.sendFile(__dirname + '/dist/index.html')
     } else {
         res.status(404)
         res.redirect('/')
     }
+})
+
+app.post('^/:link([a-zA-Z0-9-_]+)$', async (req, res) => {
+    const links = await loadLinkColl()
+    const check = await links.find({ result: req.params.link }).toArray()
+    res.status(201).send({ link: check[0].link })
 })
 
 app.use((req, res) => {
